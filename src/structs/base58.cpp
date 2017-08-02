@@ -29,7 +29,13 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
         psz++;
     // Skip and count leading '1's.
     int zeroes = 0;
-    while (*psz == 'T') {
+    if (*psz == 'T') {
+        zeroes++;
+        psz++;
+    } else {
+        return false;
+    }
+    while (*psz == '1') {
         zeroes++;
         psz++;
     }
@@ -97,9 +103,10 @@ std::string EncodeBase58(const unsigned char* pbegin, const unsigned char* pend)
     // Translate the result into a string.
     std::string str;
     str.reserve(zeroes + (b58.end() - it));
-    str.assign(zeroes, 'T');
+    str.assign(zeroes, '1');
     while (it != b58.end())
         str += pszBase58[*(it++)];
+    str[0] = 'T';
     return str;
 }
 
